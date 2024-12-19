@@ -3,6 +3,8 @@
 dev=/dev/
 mount=/dev/myvg/mylv
 path=/var/lib/mysql
+file=./host_config
+hosts=/etc/hosts
 
 check_root ()
 {
@@ -12,6 +14,29 @@ check_root ()
         echo "Please Login "root" User and Run Script Agein." 
         exit 1
     fi
+}
+
+read_m_s ()
+{
+    read -p "Enter DataBase Server IP Address: " db
+    read -p "Enter DataBase Server Host Name: " dbhost
+    read -p "Enter Wordpress Server IP Address: " web
+    read -p "Enter Wordpress Server Host Name: " webhost
+}
+
+input ()
+{
+    echo ${db} ${dbhost} >> ${hosts}
+    echo ${web} ${webhost} >> ${hosts}
+    echo ${web} ${webhost} > ${file}
+    echo ${db} ${dbhost} >> ${file}
+}
+
+ssh_keygen ()
+{
+    read -p "Enter Wordpress Server Username: " name
+    ssh-keygen
+    ssh-copy-id ${name}@${webhost}
 }
 
 LVM ()
@@ -48,6 +73,7 @@ LVM ()
 install_mariadb ()
 {
     path=/var/lib/mysql
+    maria=/etc/mysql/mariadb.conf.d/50-server.cnf
     mkdir -p ${path}
     blkid ${mount} | awk '{print $2}' > uuid
     sed -i 's/UUID="//g' uuid
@@ -57,6 +83,15 @@ install_mariadb ()
     if [ `echo $?` == 0 ]; then
         sudo apt update
         sudo apt install mariadb-server -y
+        sudo -u root sed -i 's/127.0.0.1/'${db}'/g' ${maria}
+        systemctl restart mariadb
+        sudo mysql -u root <<MYSQL
+        CREATE DATABASE wordpress;
+        CREATE USER wordpress@'%' IDENTIFIED BY '123456';
+        GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER ON wordpress.* TO 'wordpress'@'%';
+        FLUSH PRIVILEGES;
+        quit
+MYSQL
     else
         echo "Check your Mount Point. "
         exit 1
@@ -66,12 +101,24 @@ install_mariadb ()
     rm uuid
 }
 
+SSH_wordpress ()
+{
+    rsync ${file} ${name}@${webhost}:/home/${name}
+    rsync ./wordpress.sh ${name}@${webhost}:/home/${name}
+    ssh -T -t ${name}@${webhost}
+}
+
 #iptables ()
 
 main ()
 {
     check_root
+    read_m_s
+    input
     LVM
     install_mariadb
+    ssh_keygen
+    SSH_wordpress
+    echo "Now Open Browser and Login to Wordpress"
 }
 main
