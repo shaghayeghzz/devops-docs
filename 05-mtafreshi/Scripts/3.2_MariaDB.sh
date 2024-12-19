@@ -28,9 +28,8 @@ LVM ()
             (echo n; echo p; echo ""; echo ""; echo ""; echo t; echo 8E; echo w) | fdisk /dev/${blk}
             echo ''${blk}''1'' > file"${i}"
             echo ''${dev}''${blk}''1'' >> file
+            lsblk
         done
-    sudo lsblk
-    sleep 5
     paste -s -d " " file > row
     pvcreate `cat row`
     vgcreate myvg `cat row`
@@ -39,27 +38,31 @@ LVM ()
     sed -i 's/.99//g' size
     vgdisplay myvg | grep -i "vg size" | awk '{print $4}' > size1
     sed -i 's/iB//g' size1
-    lvcreate --name mylv --size ${size}${size1} myvg
+    lvcreate --name mylv --size `cat size``cat size1` myvg
     mkfs.ext4 ${mount}
+    lsblk
+    sleep 5
     rm size size1 row file file{1..3}
 }
 
 install_mariadb ()
 {
     path=/var/lib/mysql
-    mkdir ${path}
+    mkdir -p ${path}
     blkid ${mount} | awk '{print $2}' > uuid
     sed -i 's/UUID="//g' uuid
     sed -i 's/"//g' uuid
-    echo "`cat uuid`  '${path}'  ext4    defaults 0 1" >> /etc/fstab
+    echo "/dev/disk/by-uuid/`cat uuid`  ${path}  ext4    defaults 0 1" >> /etc/fstab
     mount -a
     if [ `echo $?` == 0 ]; then
         sudo apt update
         sudo apt install mariadb-server -y
     else
         echo "Check your Mount Point. "
-        break
+        exit 1
     fi
+    df -h
+    sleep 5
     rm uuid
 }
 
