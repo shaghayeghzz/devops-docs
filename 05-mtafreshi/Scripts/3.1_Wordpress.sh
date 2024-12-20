@@ -1,10 +1,5 @@
 #!/bin/bash
 
-path=/etc/apache2/sites-available/wordpress.conf
-config=/srv/www/wordpress/wp-config.php
-file=./host_config
-hosts=/etc/hosts
-
 check_root ()
 {
     if [ `whoami` == "root" ]; then
@@ -17,11 +12,16 @@ check_root ()
 
 hosts ()
 {
+    hosts=/etc/hosts
+    file=./host_config
     echo "`cat ${file}`" >> ${hosts}
 }
 
 install_wordpress ()
 {
+    path=/etc/apache2/sites-available/wordpress.conf
+    config=/srv/www/wordpress/wp-config.php
+    hosts=/etc/hosts
     apt update
     apt install apache2 ghostscript libapache2-mod-php php php-bcmath php-curl php-imagick php-intl php-json php-mbstring php-mysql php-xml php-zip -y
     mkdir -p /srv/www
@@ -53,6 +53,7 @@ install_wordpress ()
     tail -n 1 ${hosts} | awk '{print $2}' > db
     sudo -u www-data sed -i "s/localhost/'\''`cat db`'\''/" ${config}
     # https://api.wordpress.org/secret-key/1.1/salt/ (Secure Vulnerability input to /srv/www/wordpress/wp-config.php)
+    exit 1
     logout
 }
 
@@ -62,3 +63,4 @@ main ()
     hosts
     install_wordpress
 }
+main
