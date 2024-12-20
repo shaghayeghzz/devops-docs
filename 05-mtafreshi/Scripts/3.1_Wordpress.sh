@@ -23,7 +23,7 @@ install_wordpress ()
     config=/srv/www/wordpress/wp-config.php
     hosts=/etc/hosts
     apt update
-    apt install apache2 ghostscript libapache2-mod-php php php-bcmath php-curl php-imagick php-intl php-json php-mbstring php-mysql php-xml php-zip -y
+    apt install apache2 ghostscript libapache2-mod-php php php-bcmath php-curl php-imagick php-intl php-json php-mbstring php-mysql php-xml php-zip iptables-persistent -y
     mkdir -p /srv/www
     chown www-data: /srv/www
     curl https://wordpress.org/latest.tar.gz | sudo -u www-data tar zx -C /srv/www
@@ -50,11 +50,32 @@ install_wordpress ()
     sudo -u www-data sed -i 's/database_name_here/wordpress/' ${config}
     sudo -u www-data sed -i 's/username_here/wordpress/' ${config}
     sudo -u www-data sed -i 's/password_here/'123456'/' ${config}
-    tail -n 1 ${hosts} | awk '{print $2}' > db
-    sudo -u www-data sed -i "s/localhost/`cat db`/" ${config}
+    tail -n 1 ${file} | awk '{print $2}' > dbhost
+    sudo -u www-data sed -i "s/localhost/`cat dbhost`/" ${config}
     # https://api.wordpress.org/secret-key/1.1/salt/ (Secure Vulnerability input to /srv/www/wordpress/wp-config.php)
-    exit 1
-    logout
+}
+
+iptables ()
+{
+    file=./host_config
+    tail -n 1 ${file} | awk '{print $1}' > db
+    head -n 1 ${file} | awk '{print $1}' > web
+    iptables -A INPUT -d `cat web` -p TCP --dport 22 -j ACCEPT
+    iptables -A INPUT -d `cat web` -p TCP --sport 22 -j ACCEPT
+    iptables -A INPUT -d `cat web` -p TCP --dport 80 -j ACCEPT
+    iptables -A INPUT -s `cat db` -d `cat web` -p TCP --sport 3306 -j ACCEPT
+    iptables -A OUTPUT -s `cat web` -p TCP --sport 22 -j ACCEPT
+    iptables -A OUTPUT -s `cat web` -p TCP --dport 22 -j ACCEPT
+    iptables -A OUTPUT -s `cat web` -d `cat db` -p TCP --dport 3306 -j ACCEPT
+    iptables -A OUTPUT -s `cat web` -p TCP --sport 80 -j ACCEPT
+    iptables -nvL
+    sleep 5
+    iptables -P INPUT DROP
+    iptables -P OUTPUT DROP
+    iptables -nvL
+    sleep 5
+    iptables-save > /etc/iptables/rules.v4
+    rm ${file} db dbhost web
 }
 
 main ()
@@ -62,5 +83,6 @@ main ()
     check_root
     hosts
     install_wordpress
+    iptables
 }
 main
