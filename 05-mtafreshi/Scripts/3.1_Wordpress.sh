@@ -51,7 +51,7 @@ install_wordpress ()
     sudo -u www-data sed -i 's/username_here/wordpress/' ${config}
     sudo -u www-data sed -i 's/password_here/'123456'/' ${config}
     tail -n 1 ${hosts} | awk '{print $2}' > db
-    sudo -u www-data sed -i "s/localhost/'`cat db`'/" ${config}
+    sudo -u www-data sed -i "s/localhost/`cat db`/" ${config}
     # https://api.wordpress.org/secret-key/1.1/salt/ (Secure Vulnerability input to /srv/www/wordpress/wp-config.php)
     exit 1
     logout
