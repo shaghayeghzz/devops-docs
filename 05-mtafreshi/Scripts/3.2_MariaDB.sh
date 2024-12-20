@@ -119,6 +119,29 @@ main ()
     install_mariadb
     ssh_keygen
     SSH_wordpress
-    echo "Now Open Browser and Login to Wordpress"
+    echo ""
+    echo ""
+    echo ""
+    echo "                             *"
+    echo "                            ***"
+    echo "                         *********"
+    echo "                      ***************"
+    echo "                   *********************"
+    echo "                ***************************"
+    echo "             *********************************"
+    echo "          ***************************************"
+    echo "          Now Open Browser and Login to Wordpress"
+    echo "          ======================================="
+    echo "                     ================="
+    echo "                        ==========="
+    echo "                           ====="
+    echo "                            ==="
+    echo "                             ="
+    echo ""
+    echo "                      IP Address is: "
+    echo "                      ______________"
+    echo ""
+    echo "                       ${web}"
+
 }
 main
