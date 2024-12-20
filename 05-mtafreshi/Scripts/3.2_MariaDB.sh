@@ -82,7 +82,7 @@ install_mariadb ()
     mount -a
     if [ `echo $?` == 0 ]; then
         sudo apt update
-        sudo apt install mariadb-server -y
+        sudo apt install mariadb-server iptables-persistent -y
         sudo -u root sed -i 's/127.0.0.1/'${db}'/g' ${maria}
         systemctl restart mariadb
         sudo mysql -u root <<MYSQL
@@ -108,7 +108,7 @@ SSH_wordpress ()
     ssh -T -t ${name}@${webhost}
 }
 
-iptables ()
+iptable ()
 {
     file=./host_config
     tail -n 1 ${file} | awk '{print $1}' > db
@@ -135,7 +135,7 @@ main ()
     input
     LVM
     install_mariadb
-    iptables
+    iptable
     ssh_keygen
     SSH_wordpress
     echo ""
