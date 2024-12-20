@@ -55,7 +55,7 @@ install_wordpress ()
     # https://api.wordpress.org/secret-key/1.1/salt/ (Secure Vulnerability input to /srv/www/wordpress/wp-config.php)
 }
 
-iptables ()
+iptable ()
 {
     file=./host_config
     tail -n 1 ${file} | awk '{print $1}' > db
@@ -66,8 +66,8 @@ iptables ()
     iptables -A INPUT -s `cat db` -d `cat web` -p TCP --sport 3306 -j ACCEPT
     iptables -A OUTPUT -s `cat web` -p TCP --sport 22 -j ACCEPT
     iptables -A OUTPUT -s `cat web` -p TCP --dport 22 -j ACCEPT
-    iptables -A OUTPUT -s `cat web` -d `cat db` -p TCP --dport 3306 -j ACCEPT
     iptables -A OUTPUT -s `cat web` -p TCP --sport 80 -j ACCEPT
+    iptables -A OUTPUT -s `cat web` -d `cat db` -p TCP --dport 3306 -j ACCEPT
     iptables -nvL
     sleep 5
     iptables -P INPUT DROP
@@ -83,6 +83,6 @@ main ()
     check_root
     hosts
     install_wordpress
-    iptables
+    iptable
 }
 main
