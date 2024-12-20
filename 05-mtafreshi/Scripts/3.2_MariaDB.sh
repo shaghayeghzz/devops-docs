@@ -108,7 +108,25 @@ SSH_wordpress ()
     ssh -T -t ${name}@${webhost}
 }
 
-#iptables ()
+iptables ()
+{
+    file=./host_config
+    tail -n 1 ${file} | awk '{print $1}' > db
+    head -n 1 ${file} | awk '{print $1}' > web
+    iptables -A INPUT -d `cat db` -p TCP --dport 22 -j ACCEPT
+    iptables -A INPUT -d `cat db` -p TCP --sport 22 -j ACCEPT
+    iptables -A INPUT -s `cat web` -d `cat db` -p TCP --dport 3306 -j ACCEPT
+    iptables -A OUTPUT -s `cat db` -p TCP --sport 22 -j ACCEPT
+    iptables -A OUTPUT -s `cat db` -p TCP --dport 22 -j ACCEPT
+    iptables -A OUTPUT -s `cat db` -d `cat web` -p TCP --sport 3306 -j ACCEPT
+    iptables -nvL
+    sleep 5
+    iptables -P INPUT DROP
+    iptables -P OUTPUT DROP
+    iptables -nvL
+    sleep 5
+    iptables-save > /etc/iptables/rules.v4
+}
 
 main ()
 {
@@ -117,6 +135,7 @@ main ()
     input
     LVM
     install_mariadb
+    iptables
     ssh_keygen
     SSH_wordpress
     echo ""
