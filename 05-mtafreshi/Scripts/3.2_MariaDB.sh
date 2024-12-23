@@ -22,6 +22,8 @@ read_m_s ()
     read -p "Enter DataBase Server Host Name: " dbhost
     read -p "Enter Wordpress Server IP Address: " web
     read -p "Enter Wordpress Server Host Name: " webhost
+    read -p "Enter Nginx Server IP Address: " nginx
+    read -p "Enter Nginx Server Host Name: " nginxhost
 }
 
 input ()
@@ -29,14 +31,15 @@ input ()
     echo ${db} ${dbhost} >> ${hosts}
     echo ${web} ${webhost} >> ${hosts}
     echo ${web} ${webhost} > ${file}
+    echo ${nginx} ${nginxhost} > ${file}
     echo ${db} ${dbhost} >> ${file}
 }
 
 ssh_keygen ()
 {
-    read -p "Enter Wordpress Server Username: " name
     ssh-keygen
-    ssh-copy-id ${name}@${webhost}
+    ssh-copy-id ${webname}@${webhost}
+    ssh-copy-id ${nginxname}@${nginxhost}
 }
 
 LVM ()
@@ -103,9 +106,16 @@ MYSQL
 
 SSH_wordpress ()
 {
-    rsync ${file} ${name}@${webhost}:/home/${name}
-    rsync ./wordpress.sh ${name}@${webhost}:/home/${name}
-    ssh -T -t ${name}@${webhost}
+    rsync ${file} ${webname}@${webhost}:/home/${webname}
+    rsync ./wordpress.sh ${webname}@${webhost}:/home/${webname}
+    ssh -T -t ${webname}@${webhost}
+}
+
+SSH_nginx ()
+{
+    rsync ${file} ${nginxname}@${nginxhost}:/home/${nginxname}
+    rsync ./nginx.sh ${nginxname}@${nginxhost}:/home/${nginxname}
+    ssh -T -t ${nginxname}@${nginxhost}
 }
 
 iptable ()
@@ -136,8 +146,11 @@ main ()
     LVM
     install_mariadb
     iptable
+    read -p "Enter Wordpress Server Username: " webname
+    read -p "Enter Nginx Server Username: " nginxname
     ssh_keygen
     SSH_wordpress
+    SSH_nginx
     echo ""
     echo ""
     echo ""
