@@ -60,22 +60,24 @@ iptable ()
     file=./host_config
     tail -n 1 ${file} | awk '{print $1}' > db
     head -n 1 ${file} | awk '{print $1}' > web
+    tail -n 2 ${file} > ngtemp
+    head -n 1 ngtemp | awk '{print $1}' > ng
     iptables -A INPUT -d `cat web` -p TCP --dport 22 -j ACCEPT
     iptables -A INPUT -d `cat web` -p TCP --sport 22 -j ACCEPT
-    iptables -A INPUT -d `cat web` -p TCP --dport 80 -j ACCEPT
+    iptables -A INPUT -s `cat ng` -d `cat web` -p TCP --dport 80 -j ACCEPT
     iptables -A INPUT -s `cat db` -d `cat web` -p TCP --sport 3306 -j ACCEPT
     iptables -A OUTPUT -s `cat web` -p TCP --sport 22 -j ACCEPT
     iptables -A OUTPUT -s `cat web` -p TCP --dport 22 -j ACCEPT
-    iptables -A OUTPUT -s `cat web` -p TCP --sport 80 -j ACCEPT
+    iptables -A OUTPUT -s `cat web` -d `cat ng` -p TCP --sport 80 -j ACCEPT
     iptables -A OUTPUT -s `cat web` -d `cat db` -p TCP --dport 3306 -j ACCEPT
     iptables -nvL
     sleep 5
-    iptables -P INPUT DROP
-    iptables -P OUTPUT DROP
-    iptables -nvL
+    #iptables -P INPUT DROP
+    #iptables -P OUTPUT DROP
+    #iptables -nvL
     sleep 5
     iptables-save > /etc/iptables/rules.v4
-    rm ${file} db dbhost web
+    rm db dbhost web ngtemp ng ${file}
 }
 
 main ()
