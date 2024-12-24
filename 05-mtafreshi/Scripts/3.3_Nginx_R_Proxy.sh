@@ -23,13 +23,16 @@ nginx_reverse ()
 config_proxy ()
 {
     path=/etc/nginx/sites-available/reverse-proxy
+    file=./host_config
+    tail -n 2 ${file} | head -n 1 ${file} | awk '{print $1}' > ng
+    head -n 1 ${file} | awk '{print $1}' > web
     unlink /etc/nginx/sites-enabled/default
     echo "server {" > ${path}
     echo "    listen 80;" >> ${path}
-    echo "    server_name 192.168.10.4;" >> ${path}
+    echo "    server_name `cat ng`;" >> ${path}
     echo "" >> ${path}
     echo "    location / {" >> ${path}
-    echo "        proxy_pass http://192.168.10.3:80;" >> ${path}
+    echo "        proxy_pass http://`cat web`:80;" >> ${path}
     echo "    }" >> ${path}
     echo "}" >> ${path}
     cat ${path}
