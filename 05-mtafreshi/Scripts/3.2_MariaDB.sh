@@ -31,7 +31,7 @@ input ()
     echo ${db} ${dbhost} >> ${hosts}
     echo ${web} ${webhost} >> ${hosts}
     echo ${web} ${webhost} > ${file}
-    echo ${nginx} ${nginxhost} > ${file}
+    echo ${nginx} ${nginxhost} >> ${file}
     echo ${db} ${dbhost} >> ${file}
 }
 
@@ -39,7 +39,7 @@ ssh_keygen ()
 {
     ssh-keygen
     ssh-copy-id ${webname}@${webhost}
-    ssh-copy-id ${nginxname}@${nginxhost}
+    ssh-copy-id ${nginxname}@${nginx}
 }
 
 LVM ()
@@ -113,9 +113,9 @@ SSH_wordpress ()
 
 SSH_nginx ()
 {
-    rsync ${file} ${nginxname}@${nginxhost}:/home/${nginxname}
-    rsync ./nginx.sh ${nginxname}@${nginxhost}:/home/${nginxname}
-    ssh -T -t ${nginxname}@${nginxhost}
+    rsync ${file} ${nginxname}@${nginx}:/home/${nginxname}
+    rsync ./nginx.sh ${nginxname}@${nginx}:/home/${nginxname}
+    ssh -T -t ${nginxname}@${nginx}
 }
 
 iptable ()
@@ -173,7 +173,7 @@ main ()
     echo "                      IP Address is: "
     echo "                      ______________"
     echo ""
-    echo "                       ${web}"
+    echo "                       ${nginx}"
 
 }
 main
