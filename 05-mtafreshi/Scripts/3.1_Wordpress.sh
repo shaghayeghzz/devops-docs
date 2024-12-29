@@ -72,9 +72,9 @@ iptable ()
     iptables -A OUTPUT -s `cat web` -d `cat db` -p TCP --dport 3306 -j ACCEPT
     iptables -nvL
     sleep 5
-    #iptables -P INPUT DROP
-    #iptables -P OUTPUT DROP
-    #iptables -nvL
+    iptables -P INPUT DROP
+    iptables -P OUTPUT DROP
+    iptables -nvL
     sleep 5
     iptables-save > /etc/iptables/rules.v4
     rm db dbhost web ngtemp ng ${file}
