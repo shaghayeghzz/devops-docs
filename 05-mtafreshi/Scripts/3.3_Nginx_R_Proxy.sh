@@ -67,7 +67,7 @@ iptable ()
 check_nginx ()
 {
     systemctl restart nginx
-    if [ `$?` == 0 ]; then
+    if [ `echo $?` == 0 ]; then
         echo "Nginx Server is Already Installed. "
         read -p "Do you want to configure Server to Reverse_Proxy? (y/n) " answer
         if [ ${answer} == y ]; then
