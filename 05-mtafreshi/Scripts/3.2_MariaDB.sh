@@ -48,7 +48,6 @@ LVM ()
     mount=/dev/myvg/mylv
     echo "Recomended You Have to 3 Disk for Create LVM. :) !~ "
     sudo lsblk
-    sleep 5
     read -p "How many Disk to Create Partition? " num
     for (( i=1; i<=${num}; i++ ));
         do
