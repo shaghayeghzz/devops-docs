@@ -83,9 +83,9 @@
         mode: '0777'
 
 ########### service
+
     - name: Restart nginx service
       service:
         name: nginx
         state: restarted
-        enabled: yes
 
