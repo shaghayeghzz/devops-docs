@@ -30,6 +30,7 @@ input ()
 {
     echo ${db} ${dbhost} >> ${hosts}
     echo ${web} ${webhost} >> ${hosts}
+    echo ${nginx} ${nginxhost} >> ${hosts}
     echo ${web} ${webhost} > ${file}
     echo ${nginx} ${nginxhost} >> ${file}
     echo ${db} ${dbhost} >> ${file}
@@ -48,7 +49,6 @@ LVM ()
     mount=/dev/myvg/mylv
     echo "Recomended You Have to 3 Disk for Create LVM. :) !~ "
     sudo lsblk
-    sleep 5
     read -p "How many Disk to Create Partition? " num
     for (( i=1; i<=${num}; i++ ));
         do
@@ -173,7 +173,7 @@ main ()
     echo "                      IP Address is: "
     echo "                      ______________"
     echo ""
-    echo "                       ${nginx}"
+    echo "                     http://${nginxhost}/proxy"
 
 }
 main
