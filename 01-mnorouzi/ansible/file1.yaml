@@ -3,15 +3,15 @@
   hosts: all
   become: yes
   tasks:
-    #    - name: Update apt cache
-    #      apt:
-    #        update_cache: yes
-    #
-    #    - name: Install nginx on all servers
-    #      apt:
-    #        name: nginx
-    #        state: latest
-    #
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install nginx on all servers
+      apt:
+        name: nginx
+        state: latest
+
     - name: print a ip address
       debug:
         var: "ansible_all_ipv4_addresses"
