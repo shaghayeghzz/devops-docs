@@ -1,5 +1,12 @@
 # without roles
+
+```
 ansible-playbook -i inventory/hosts.ini file1.yaml
+```
 
+# with roles
 
-```yamlansible-playbook -i inventory/hosts.ini file1.yamlansible-playbook -i inventory/hosts.ini file1.yamuuukkul
+```
+ansible-playbook -i inventory/hosts.ini main.yml  --become --become-method=sudo
+```
+
