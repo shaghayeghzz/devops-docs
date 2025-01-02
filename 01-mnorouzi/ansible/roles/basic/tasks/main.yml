@@ -21,3 +21,14 @@
   copy:
     src: motd.txt
     dest: /etc/motd
+
+- name: Copy resolve.conf to remote servers
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+
+- name: Copy sample confing file
+  template:
+    src: sample.conf.j2
+    dest: /opt/sample.conf
+
