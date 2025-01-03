@@ -30,21 +30,23 @@
     group: root
     mode: 0644
 
-- name: Restart zabbix services
+- name: Restart postgres services
   service:
     name: postgresql
     state: restarted
 
-- name: set password postgres
-  shell: |
-    sudo -u postgres psql -c "ALTER USER postgres PASSWORD '123456';"
+- name: Create User
+  community.postgresql.postgresql_user:
+    name: zabbix
+    password: 123456
+    login_user: postgres
+    login_password: 123456
 
 - name: Create DB
   community.postgresql.postgresql_db:
     name: zabbix
-    state: present
-  become: yes
-  become_user: postgres
+    login_user: postgres
+    login_password: 123456
 
 - name: Add Password in Database Config File
   lineinfile:
@@ -57,9 +59,18 @@
 
 - name: Restart zabbix services
   service:
-    name:
-      - zabbix-server
-      - zabbix-agent
-      - apache2
+    name: zabbix-server
+    state: restarted
+    enabled: yes
+
+- name: Restart zabbix services
+  service:
+    name: zabbix-agent
+    state: restarted
+    enabled: yes
+
+- name: Restart zabbix services
+  service:
+    name: apache2
     state: restarted
     enabled: yes
