@@ -15,17 +15,42 @@
     state: present
   when: ansible_facts['os_family'] == "Debian"
 
-- name: Config Database postgresql
-  command:
-    - sudo -u postgres createuser --pwprompt zabbix
-    - sudo -u postgres createdb -O zabbix zabbix
-    - zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix
+    #- name: Create the users
+    #  community.postgresql.postgresql_user:
+    #    name: zabbix
+    #    password: 123456
+    #    login_user: postgres
+
+- name: Change pq_hba.conf to md5
+  lineinfile:
+    path: /etc/postgresql/16/main/pg_hba.conf
+    regexp: '^local   all             postgres                                peer'
+    line: 'local   all             postgres                                md5'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Restart zabbix services
+  service:
+    name: postgresql
+    state: restarted
+
+- name: set password postgres
+  shell: |
+    sudo -u postgres psql -c "ALTER USER postgres PASSWORD '123456';"
+
+- name: Create DB
+  community.postgresql.postgresql_db:
+    name: zabbix
+    state: present
+  become: yes
+  become_user: postgres
 
 - name: Add Password in Database Config File
   lineinfile:
     path: "{{ db }}"
     regexp: '^# DBPassword='
-    line: 'DBPassword=Xx@123456'
+    line: 'DBPassword=123456'
     owner: root
     group: root
     mode: 0644
