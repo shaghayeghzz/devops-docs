@@ -1,7 +1,7 @@
 ---
 # tasks file for basic
 
-- name: Install Azabbix and Requirment
+- name: Install zabbix and Requirment
   apt:
     name:
       - zabbix-server-pgsql
@@ -12,41 +12,49 @@
       - zabbix-agent
       - postgresql
       - postgresql-contrib
+      - python3-psycopg2
+      - libpq-dev
     state: present
+    update_cache: yes
   when: ansible_facts['os_family'] == "Debian"
 
-    #- name: Create the users
-    #  community.postgresql.postgresql_user:
-    #    name: zabbix
-    #    password: 123456
-    #    login_user: postgres
-
-- name: Change pq_hba.conf to md5
-  lineinfile:
-    path: /etc/postgresql/16/main/pg_hba.conf
-    regexp: '^local   all             postgres                                peer'
-    line: 'local   all             postgres                                md5'
-    owner: root
-    group: root
-    mode: 0644
-
-- name: Restart postgres services
+- name: Start and Enabled Postgresql Service
   service:
     name: postgresql
-    state: restarted
+    state: started
+    enabled: yes
 
-- name: Create User
-  community.postgresql.postgresql_user:
-    name: zabbix
-    password: 123456
-    login_user: postgres
-    login_password: 123456
+      #- name: IP
+      #  shell:
+      #    cmd: hostname -I | awk '{print $2}'
+      #  register: output_file
+      #
+      #- name: Set IP
+      #  lineinfile:
+      #    path: /etc/postgresql/16/main/postgresql.conf
+      #    regexp: "^#listen_addresses = 'localhost'"
+      #    line: "listen_addresses = '{{ output_file.stdout }}'"
+      #    owner: root
+      #    group: root
+      #    mode: 0644
+      #
+      #- name: Restart postgres services
+      #  service:
+      #    name: postgresql
+      #    state: restarted
 
-- name: Create DB
-  community.postgresql.postgresql_db:
-    name: zabbix
-    login_user: postgres
-    login_password: 123456
+- name: Config postgres
+  shell: |
+      sudo -u postgres psql <<EOF
+      CREATE USER zabbix WITH PASSWORD '123456';
+      CREATE DATABASE zabbix OWNER zabbix;
+      GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO zabbix;
+      \q
+      EOF
+
+- name: ZCAT
+  shell: |
+      zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix
 
 - name: Add Password in Database Config File
   lineinfile:
@@ -57,20 +65,21 @@
     group: root
     mode: 0644
 
-- name: Restart zabbix services
+- name: Restart zabbix-server services
   service:
     name: zabbix-server
     state: restarted
     enabled: yes
 
-- name: Restart zabbix services
+- name: Restart zabbix-agent services
   service:
     name: zabbix-agent
     state: restarted
     enabled: yes
 
-- name: Restart zabbix services
+- name: Restart Appache services
   service:
     name: apache2
     state: restarted
     enabled: yes
+
