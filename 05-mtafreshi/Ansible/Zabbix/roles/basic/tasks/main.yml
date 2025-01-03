@@ -12,14 +12,10 @@
       - zabbix-agent
       - postgresql
       - postgresql-contrib
+      - python3-psycopg2
+      - libpq-dev
     state: present
   when: ansible_facts['os_family'] == "Debian"
-
-    #- name: Create the users
-    #  community.postgresql.postgresql_user:
-    #    name: zabbix
-    #    password: 123456
-    #    login_user: postgres
 
 - name: Change pq_hba.conf to md5
   lineinfile:
@@ -34,6 +30,12 @@
   service:
     name: postgresql
     state: restarted
+
+- name: Set password for PostgreSQL user 'postgres'
+  shell: |
+    sudo -u postgres psql -c "ALTER USER postgres PASSWORD '123456';"
+  args:
+    warn: false
 
 - name: Create User
   community.postgresql.postgresql_user:
@@ -57,19 +59,19 @@
     group: root
     mode: 0644
 
-- name: Restart zabbix services
+- name: Restart zabbix-server services
   service:
     name: zabbix-server
     state: restarted
     enabled: yes
 
-- name: Restart zabbix services
+- name: Restart zabbix-agent services
   service:
     name: zabbix-agent
     state: restarted
     enabled: yes
 
-- name: Restart zabbix services
+- name: Restart Appache services
   service:
     name: apache2
     state: restarted
