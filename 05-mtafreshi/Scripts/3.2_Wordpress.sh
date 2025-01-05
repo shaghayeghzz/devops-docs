@@ -74,7 +74,7 @@ iptable ()
     sleep 5
     #iptables -P INPUT DROP
     #iptables -P OUTPUT DROP
-    #iptables -nvL
+    iptables -nvL
     sleep 5
     iptables-save > /etc/iptables/rules.v4
     rm db dbhost web ngtemp ng ${file}
