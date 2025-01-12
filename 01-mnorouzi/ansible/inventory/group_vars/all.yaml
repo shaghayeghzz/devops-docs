@@ -14,12 +14,12 @@ infra_env: "development"
 
 #### for loop
 my_value:
-  - name: mohsen
-  - age: 35 
+  - name: ali
+  - age: 30
   - job: SOC
   - city: tehran
   - country: Germany
-  - phone: 09351185206
+  - phone: 0123456789
 
 my_variable:
   - name: john
