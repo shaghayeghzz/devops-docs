@@ -1,1 +1,0 @@
-absible-playbook -i inventory/hosts.ini --become --become-method=sudo
