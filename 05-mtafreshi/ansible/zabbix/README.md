@@ -3,7 +3,10 @@
 ```
 ansible-galaxy collection install community.postgresql
 ``` 
-### Please Configure cpath in group_vars/all.yaml 
+### Please Configure 'cpath' for Access Ansible to vault.txt
+```
+inventory/group_vars/all.yaml 
+```
 
 ## Run Ansible:
 ```
