@@ -62,7 +62,7 @@
   postgresql_user:
     db: zabbix 
     user: zabbix
-    password: 123456
+    password: "{{ vault }}"
     login_user: postgres
     login_host: "{{ output_file.stdout }}"
 
@@ -85,7 +85,7 @@
   lineinfile:
     path: "{{ db }}"
     regexp: '^# DBPassword='
-    line: 'DBPassword=123456'
+    line: 'DBPassword={{ vault }}'
     owner: root
     group: root
     mode: 0644
