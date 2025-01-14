@@ -6,7 +6,7 @@ ansible-galaxy collection install community.postgresql
 
 ## Run Ansible:
 ```
-ansible-playbook -i inventory/hosts.ini main.yaml --become --become-method=sudo
+ansible-playbook -i inventory/hosts.ini main.yaml --become --become-method=sudo -J
 ```
 
 Good Lock!~ .
