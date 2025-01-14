@@ -3,6 +3,7 @@
 ```
 ansible-galaxy collection install community.postgresql
 ``` 
+### Please Configure cpath in group_vars/all.yaml 
 
 ## Run Ansible:
 ```
