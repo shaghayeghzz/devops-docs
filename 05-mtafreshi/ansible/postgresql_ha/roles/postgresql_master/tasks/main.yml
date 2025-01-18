@@ -31,21 +31,10 @@
 - name: Config postgres user
   postgresql_user: 
     user: replica
-    password: Xx@123456
+    password: "{{ vault }}"
     role_attr_flags: Replication
     login_user: postgres
     login_host: "{{ ansible_ssh_host }}"
-
-      #- name: Config postgres privs
-      #  postgresql_privs:
-      #    db: postgres
-      #    state: present
-      #    roles: replication
-      #    privs: ALL
-      #    objs: public
-      #    type: schema
-      #    login_user: postgres
-      #    login_host: "{{ ansible_ssh_host }}"
 
 - name: Restart postgres services
   service:
