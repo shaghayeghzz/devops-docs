@@ -34,7 +34,7 @@
       expect:
         command: sudo -u postgres pg_basebackup -h db-srv-main -D /var/lib/postgresql/16/main/ -U replica -P -v -R -X stream -C -S slaveslot1  
         responses:
-          'Password:': 'Xx@123456'
+          'Password:': '{{ vault }}'
 
     - name: Config Listen Address Postgresql
       lineinfile:
