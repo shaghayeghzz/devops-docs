@@ -15,11 +15,7 @@ infra_env: "development"
 #### for loop
 my_value:
   - name: ali
-<<<<<<< HEAD
   - age: 30
-=======
-  - age: 30 
->>>>>>> 6bdd03032c249a10b33fdbf577527eedde2d191b
   - job: SOC
   - city: tehran
   - country: Germany
