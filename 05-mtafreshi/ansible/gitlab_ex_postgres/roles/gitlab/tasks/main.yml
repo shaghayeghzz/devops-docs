@@ -13,13 +13,13 @@
 
 - name: push gitlab-ce to host
   ansible.posix.synchronize:
-    src: "{{ gitlab_package_deb }}"
-    dest: "{{ gitlab_package_deb }}"
+    src: "{{ gitlab_package_path }}"
+    dest: "{{ gitlab_package_path }}"
   delegate_to: gitlab
 
 - name: install gitlab-ce
   apt:
-    deb: "{{ gitlab_package_deb }}"/gitlab-ce_17.8.0-ce.0_amd64.deb
+    deb: "{{ gitlab_package_deb }}"
   become: true
 
 - name: include gitlab config
