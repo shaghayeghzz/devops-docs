@@ -4,7 +4,7 @@
 ```
 ansible-galaxy collection install community.postgresql
 ``` 
-### Please Configure 'cpath' for Access Ansible to vault.txt
+### Please Configure 'perfix', 'username' for Configure GitLab!~ .
 ```
 inventory/group_vars/all.yaml 
 ```
@@ -15,7 +15,7 @@ inventory/hosts.ini
 
 ## Run Ansible:
 ```
-ansible-playbook -i inventory/hosts.ini main.yaml --become --become-method=sudo -J
+ansible-playbook -i inventory/hosts.ini main.yaml --become --become-method=sudo
 ```
 
 Good Lock!~ .
