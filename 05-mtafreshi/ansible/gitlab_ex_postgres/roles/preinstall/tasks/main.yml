@@ -39,6 +39,3 @@
     src: resolv.conf.j2
     dest: "{{ resolv }}"
 
-- name: apt update
-  apt:
-    update_cache: yes

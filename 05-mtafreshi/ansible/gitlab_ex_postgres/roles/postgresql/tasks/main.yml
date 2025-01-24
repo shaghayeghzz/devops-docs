@@ -8,6 +8,7 @@
       - python3-psycopg2
       - libpq-dev
     state: present
+    update_cache: yes
 
 - name: Start Postgres Services
   service:
@@ -15,9 +16,9 @@
     state: started
     enabled: yes
 
--name: postgres config
+- name: postgres config
   include_tasks:
-    name: postgresql_config.yml
+    file: postgresql_config.yml
     
 - name: Restart postgres services
   service:
