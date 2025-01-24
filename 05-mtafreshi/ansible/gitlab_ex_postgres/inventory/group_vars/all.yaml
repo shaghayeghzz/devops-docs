@@ -3,7 +3,7 @@ resolv: "/etc/resolv.conf"
 postgresql_path: "/etc/postgresql/{{ pversion }}/main/postgresql.conf"
 pg_hba_path: "/etc/postgresql/{{ pversion }}/main/pg_hba.conf"
 pversion: "16"
-gitlab_package_deb: "/tmp/gitlab-ce"
+gitlab_package_deb: "~/tmp/gitlab-ce"
 gitlab_rb: "/etc/gitlab/gitlab.rb"
 prefix: 24
 vault: ~/{{ cpath }}/gitlab_ex_postgres/inventory/group_vars/vault.txt
