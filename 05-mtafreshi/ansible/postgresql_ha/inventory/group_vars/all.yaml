@@ -5,8 +5,8 @@ pg_hba_path: "/etc/postgresql/{{ pversion }}/main/pg_hba.conf"
 postgresql_var_path: "/var/lib/postgresql/{{ pversion }}/main"
 backup_var_path: "/var/lib/postgresql/{{ pversion }}/main-old"
 pversion: "16"
-vault: ~/{{ cpath }}/Ansible/postgresql_ha/inventory/group_vars/vault.txt
-cpath: "private"
+vault: ~/{{ cpath }}/postgresql_ha/inventory/group_vars/vault.txt
+cpath: "workspace/devops-docs/05-mtafreshi/ansible"
 
 
 # DNS Config (SHEKAN)
