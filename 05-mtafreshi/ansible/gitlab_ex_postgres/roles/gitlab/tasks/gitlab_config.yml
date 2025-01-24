@@ -35,5 +35,5 @@
 - name: change gitlab config 6
   lineinfile:
     path: "{{ gitlab_rb }}"
-    line: "gitlab_rails['db_username'] = \"gitlab\""
+    line: "gitlab_rails['db_username'] = \"postgres\""
     

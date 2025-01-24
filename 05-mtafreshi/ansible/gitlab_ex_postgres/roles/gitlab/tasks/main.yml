@@ -17,8 +17,6 @@
   ansible.posix.synchronize:
     src: "{{ gitlab_package_path }}"
     dest: "{{ gitlab_package_path }}"
-      # src: "/tmp/gitlab-ce/"
-      # dest: "/home/mohsen/"
   register: sync_files
 
 - name: install gitlab-ce

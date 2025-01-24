@@ -15,4 +15,4 @@
 
 - name: show password for user root
   debug:
-    msg: "Password for USER 'root' is: {{ initial_root_password }}"
+    msg: "Password for USER 'root' is: {{ initial_root_password.stdout }}"
