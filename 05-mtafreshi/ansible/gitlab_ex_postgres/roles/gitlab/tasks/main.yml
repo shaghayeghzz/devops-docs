@@ -10,7 +10,6 @@
       - tzdata
       - perl
     state: present
-    update_cache: yes
 
 - name: push gitlab-ce to host
   ansible.posix.synchronize:
@@ -21,7 +20,6 @@
 - name: install gitlab-ce
   apt:
     deb: "{{ gitlab_package_deb }}"/gitlab-ce_17.8.0-ce.0_amd64.deb
-  delegate_to: gitlab
   become: true
 
 - name: include gitlab config
