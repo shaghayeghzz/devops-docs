@@ -15,6 +15,11 @@ infra_env: "development"
 #### for loop
 my_value:
   - name
+  - age
+  - job
+  - city
+  - country
+  - phone
 
 my_variable:
   - name: john
