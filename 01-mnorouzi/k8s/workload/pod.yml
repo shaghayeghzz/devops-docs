@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: default
+  namespace: my-ns
   name: nginx-1
   labels:
     app: app1
@@ -13,3 +13,4 @@ spec:
       image: nginx:1.26
       ports:
         - containerPort: 80
+
