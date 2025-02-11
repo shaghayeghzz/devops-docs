@@ -11,3 +11,9 @@ spec:
     - name: c02
       image: ubuntu
       command: ["/bin/bash", "-c", "while true; do echo hello-c02222222; sleep 2; done"]
+    - name: c03
+      image: rockylinux:9.3
+      command:
+        - /bin/bash
+        - -c
+        - while true; do echo hello-c03333333; sleep 2; done
